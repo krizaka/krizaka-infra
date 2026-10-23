@@ -45,6 +45,7 @@ resource "digitalocean_app" "app" {
         name               = service.key
         instance_count     = service.value.instance_count
         instance_size_slug = service.value.instance_size
+        environment_slug   = service.value.environment_slug
         build_command      = service.value.build_command
         dockerfile_path    = service.value.dockerfile_path
         source_dir         = service.value.source_dir

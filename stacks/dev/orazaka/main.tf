@@ -5,6 +5,7 @@ locals {
       source_repository = "krizaka/orazaka-web-client"
       branch            = "main"
       deploy_on_push    = true
+      environment_slug  = "node-js"
       build_command     = "npm install --no-audit --no-fund && npm run build"
       run_command       = "npm start"
       http_port         = 8080

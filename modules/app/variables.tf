@@ -25,6 +25,7 @@ variable "components" {
     source_repository = string
     branch            = string
     deploy_on_push    = optional(bool, false)
+    environment_slug  = optional(string)
     build_command     = optional(string)
     dockerfile_path   = optional(string)
     source_dir        = optional(string)
