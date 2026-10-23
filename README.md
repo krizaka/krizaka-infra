@@ -17,8 +17,9 @@ a product can move to another provider by swapping an adapter, not by rewriting 
 
 ## Status
 
-**Planning.** The plan, the inventory and the rules are in [docs/PLAN.md](docs/PLAN.md). Nothing here changes live
-infrastructure until a stack's `tofu plan` against the running resources is a **no-op** (imported, not recreated).
+**Steps 1–2 implemented; initial import and no-op plan pending.** The plan, inventory, and rules are in
+[docs/PLAN.md](docs/PLAN.md). Nothing here changes live infrastructure until a stack's `tofu plan` against the running
+resources is a **no-op** (imported, not recreated).
 
 ## Principles
 

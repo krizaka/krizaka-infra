@@ -5,6 +5,7 @@ The values live in the Krizaka vault (never in this repository) and reach OpenTo
 | Variable | What |
 | :--- | :--- |
 | `DIGITALOCEAN_TOKEN` | DigitalOcean API token (read-only for plans where possible) |
+| `TF_VAR_runtime_secrets` | Sensitive JSON map for the existing `orazaka-dev` runtime values (key names are in its stack README) |
 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | the S3-compatible state backend (Spaces keys) |
 | `PORKBUN_API_KEY`, `PORKBUN_SECRET_API_KEY` | DNS |
 | `BUNNY_API_KEY` | CDN and storage (read-only first) |

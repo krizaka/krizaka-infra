@@ -36,9 +36,9 @@ Find every app spec with `doctl apps spec get <id>` (read-only) and the reposito
 
 ## 3. Order of work (one PR each)
 
-1. The repository's CI: `tofu fmt`, `validate`, `tflint` and `tofu test` with mocked providers. A `.tool-versions` / `mise.toml` pinning OpenTofu.
-2. `modules/app` and `providers/digitalocean/app`. Translate `orazaka-dev.app.yaml` into a stack with **the same** spec.
-   Write the import commands in the stack's README. Acceptance: the plan is a no-op (run by Oussama).
+1. [x] The repository's CI: `tofu fmt`, `validate`, `tflint` and `tofu test` with mocked providers. A `.tool-versions` / `mise.toml` pinning OpenTofu.
+2. [x] `modules/app` and `providers/digitalocean/app`. Translate `orazaka-dev.app.yaml` into a stack with **the same** spec.
+   Write the import commands in the stack's README. Acceptance: the plan is a no-op (run by Oussama; not yet run).
 3. The same for the other App Platform apps, one stack per product.
 4. `modules/database` and `providers/digitalocean/database` for `krizaka-dev-pg`: the cluster and the database list. Users
    and passwords stay with the products' migrations.
