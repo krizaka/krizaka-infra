@@ -71,11 +71,13 @@ run "service_health_check" {
         }
       }
     }
+    service_order = ["api"]
     sensitive_env_vars = {
       api = {
         API_KEY = {
-          value = "mock-secret"
-          scope = "RUN_TIME"
+          value  = "EV[existing-encrypted-value]"
+          scope  = "RUN_TIME"
+          secret = true
         }
       }
     }
@@ -88,5 +90,15 @@ run "service_health_check" {
   assert {
     condition     = output.components.api.health_check.http_path == "/health"
     error_message = "The service health check should be retained."
+  }
+
+  assert {
+    condition     = length(output.service_order) == 1 && output.service_order[0] == "api"
+    error_message = "The configured service order should be retained."
+  }
+
+  assert {
+    condition     = output.sensitive_env_vars.api.API_KEY.value == "EV[existing-encrypted-value]"
+    error_message = "Imported secret ciphertext should pass through the provider-neutral module unchanged."
   }
 }

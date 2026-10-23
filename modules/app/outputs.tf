@@ -13,6 +13,13 @@ output "components" {
   description = "The configured services and static sites."
 }
 
+output "service_order" {
+  value = length(var.service_order) > 0 ? var.service_order : [
+    for name, component in var.components : name if component.kind == "service"
+  ]
+  description = "The service components in provider order."
+}
+
 output "sensitive_env_vars" {
   value       = var.sensitive_env_vars
   sensitive   = true
@@ -36,5 +43,6 @@ output "features" {
 
 output "vpc_id" {
   value       = var.vpc_id
+  sensitive   = true
   description = "The private network identifier, when configured."
 }

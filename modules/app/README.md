@@ -11,14 +11,16 @@ sensitive by OpenTofu and can independently be marked as provider `SECRET` value
 | --- | --- | --- |
 | `name`, `region` | yes | App name and region; retain existing values when importing. |
 | `components` | yes | Map of services/static sites and their source, build, port, health-check, sizing, and plain env settings. |
+| `service_order` | no | Explicit ordered service names; required to preserve an existing provider order on import. |
 | `sensitive_env_vars` | no | Sensitive env values per component, each with a scope and an optional provider-secret flag. |
 | `domains`, `ingress_rules` | no | Domain names and component/redirect routing rules. |
 | `features`, `vpc_id` | no | Provider-supported features and optional private network identifier. |
 
 ## Outputs
 
-`name`, `region`, `components`, `sensitive_env_vars`, `domains`, `ingress_rules`, `features`, and `vpc_id` expose the
-validated role contract. The provider adapter publishes the provider's generated `default_url` and `app_id`.
+`name`, `region`, `components`, `service_order`, `sensitive_env_vars`, `domains`, `ingress_rules`, `features`, and `vpc_id`
+expose the validated role contract. The VPC ID output is sensitive. The provider adapter publishes the provider's
+generated `default_url` and `app_id`.
 
 ## Example
 
@@ -28,6 +30,7 @@ module "app" {
 
   name   = "example-dev"
   region = "tor"
+  service_order = ["web"]
   components = {
     web = {
       kind              = "service"

@@ -19,7 +19,7 @@ jobs:
 
       - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
         with:
-          tofu_version_file: .tool-versions
+          tofu_version: 1.13.2
           github_token: ""
           tofu_wrapper: false
 
@@ -29,6 +29,15 @@ jobs:
 
       - name: Format
         run: tofu fmt -check -recursive
+
+      - name: Reject IPv4 literals in Terraform source
+        shell: bash
+        run: |
+          if find . -type f -name '*.tf' ! -path '*/tests/*' ! -path '*/.terraform/*' -print0 |
+            xargs -0 -r grep -nHE '(^|[^0-9])([0-9]{1,3}\.){3}[0-9]{1,3}([^0-9]|$)'; then
+            echo "IPv4 literals must not be committed in Terraform source."
+            exit 1
+          fi
 
       - name: Initialize and validate stacks
         shell: bash

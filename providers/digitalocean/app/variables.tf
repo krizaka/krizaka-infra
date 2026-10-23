@@ -41,6 +41,12 @@ variable "components" {
   }))
 }
 
+variable "service_order" {
+  description = "Service component names in provider order."
+  type        = list(string)
+  default     = []
+}
+
 variable "sensitive_env_vars" {
   type        = map(map(object({ value = string, scope = string, secret = optional(bool, true) })))
   description = "Sensitive env values by component."

@@ -68,6 +68,22 @@ variable "components" {
   }
 }
 
+variable "service_order" {
+  description = "Service component names in the provider's desired order."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = length(var.service_order) == 0 || (
+      length(distinct(var.service_order)) == length(var.service_order) &&
+      toset(var.service_order) == toset([
+        for name, component in var.components : name if component.kind == "service"
+      ])
+    )
+    error_message = "service_order must list each service component exactly once."
+  }
+}
+
 variable "sensitive_env_vars" {
   description = "Sensitive values for component env vars; secret controls the provider's env type."
   sensitive   = true

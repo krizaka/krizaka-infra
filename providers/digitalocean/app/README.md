@@ -7,8 +7,9 @@ configure or require credentials during validation.
 
 ## Inputs and outputs
 
-Inputs mirror `modules/app`: `name`, `region`, `components`, `sensitive_env_vars`, `domains`, `ingress_rules`, `features`,
-and optional `vpc_id`. Outputs are `app_id` (provider ID) and `default_url` (provider-generated default ingress URL).
+Inputs mirror `modules/app`: `name`, `region`, `components`, `service_order`, `sensitive_env_vars`, `domains`,
+`ingress_rules`, `features`, and optional sensitive `vpc_id`. Supply `service_order` to preserve service order on import.
+Outputs are `app_id` (provider ID) and `default_url` (provider-generated default ingress URL).
 
 ## Example
 

@@ -4,6 +4,7 @@ module "app" {
   name               = var.name
   region             = var.region
   components         = var.components
+  service_order      = var.service_order
   sensitive_env_vars = var.sensitive_env_vars
   domains            = var.domains
   ingress_rules      = var.ingress_rules
@@ -36,31 +37,33 @@ resource "digitalocean_app" "app" {
     }
 
     dynamic "service" {
-      for_each = {
-        for name, component in module.app.components : name => component
-        if component.kind == "service"
-      }
+      for_each = [
+        for name in module.app.service_order : {
+          name      = name
+          component = module.app.components[name]
+        }
+      ]
 
       content {
-        name               = service.key
-        instance_count     = service.value.instance_count
-        instance_size_slug = service.value.instance_size
-        environment_slug   = service.value.environment_slug
-        build_command      = service.value.build_command
-        dockerfile_path    = service.value.dockerfile_path
-        source_dir         = service.value.source_dir
-        run_command        = service.value.run_command
-        http_port          = service.value.http_port
-        internal_ports     = service.value.internal_ports
+        name               = service.value.name
+        instance_count     = service.value.component.instance_count
+        instance_size_slug = service.value.component.instance_size
+        environment_slug   = service.value.component.environment_slug
+        build_command      = service.value.component.build_command
+        dockerfile_path    = service.value.component.dockerfile_path
+        source_dir         = service.value.component.source_dir
+        run_command        = service.value.component.run_command
+        http_port          = service.value.component.http_port
+        internal_ports     = service.value.component.internal_ports
 
         github {
-          repo           = service.value.source_repository
-          branch         = service.value.branch
-          deploy_on_push = service.value.deploy_on_push
+          repo           = service.value.component.source_repository
+          branch         = service.value.component.branch
+          deploy_on_push = service.value.component.deploy_on_push
         }
 
         dynamic "health_check" {
-          for_each = service.value.health_check == null ? [] : [service.value.health_check]
+          for_each = service.value.component.health_check == null ? [] : [service.value.component.health_check]
           content {
             http_path             = health_check.value.http_path
             initial_delay_seconds = health_check.value.initial_delay_seconds
@@ -73,21 +76,21 @@ resource "digitalocean_app" "app" {
         }
 
         dynamic "env" {
-          for_each = local.env_keys[service.key]
+          for_each = local.env_keys[service.value.name]
           content {
             key = env.value
-            value = contains(keys(service.value.env_vars), env.value) ? (
-              service.value.env_vars[env.value].value
+            value = contains(keys(service.value.component.env_vars), env.value) ? (
+              service.value.component.env_vars[env.value].value
               ) : (
-              module.app.sensitive_env_vars[service.key][env.value].value
+              module.app.sensitive_env_vars[service.value.name][env.value].value
             )
-            scope = contains(keys(service.value.env_vars), env.value) ? (
-              service.value.env_vars[env.value].scope
+            scope = contains(keys(service.value.component.env_vars), env.value) ? (
+              service.value.component.env_vars[env.value].scope
               ) : (
-              module.app.sensitive_env_vars[service.key][env.value].scope
+              module.app.sensitive_env_vars[service.value.name][env.value].scope
             )
-            type = contains(keys(service.value.env_vars), env.value) ? "GENERAL" : (
-              module.app.sensitive_env_vars[service.key][env.value].secret ? "SECRET" : "GENERAL"
+            type = contains(keys(service.value.component.env_vars), env.value) ? "GENERAL" : (
+              module.app.sensitive_env_vars[service.value.name][env.value].secret ? "SECRET" : "GENERAL"
             )
           }
         }
@@ -101,10 +104,12 @@ resource "digitalocean_app" "app" {
       }
 
       content {
-        name          = static_site.key
-        build_command = static_site.value.build_command
-        output_dir    = static_site.value.output_dir
-        source_dir    = static_site.value.source_dir
+        name             = static_site.key
+        build_command    = static_site.value.build_command
+        dockerfile_path  = static_site.value.dockerfile_path
+        environment_slug = static_site.value.environment_slug
+        output_dir       = static_site.value.output_dir
+        source_dir       = static_site.value.source_dir
 
         github {
           repo           = static_site.value.source_repository
@@ -138,9 +143,7 @@ resource "digitalocean_app" "app" {
       for_each = length(module.app.ingress_rules) == 0 ? [] : [module.app.ingress_rules]
       content {
         dynamic "rule" {
-          for_each = {
-            for index, rule in ingress.value : tostring(index) => rule
-          }
+          for_each = ingress.value
           content {
             dynamic "component" {
               for_each = rule.value.component == null ? [] : [rule.value.component]
@@ -181,9 +184,9 @@ resource "digitalocean_app" "app" {
     }
 
     dynamic "vpc" {
-      for_each = module.app.vpc_id == null ? [] : [module.app.vpc_id]
+      for_each = nonsensitive(module.app.vpc_id) == null ? [] : [true]
       content {
-        id = vpc.value
+        id = module.app.vpc_id
       }
     }
   }

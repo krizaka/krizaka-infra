@@ -23,7 +23,6 @@ locals {
         APP_DEV_HOST               = { value = "dev.orazaka.com", scope = "RUN_TIME" }
         AUTH_TRUST_HOST            = { value = "true", scope = "RUN_TIME" }
         AUTH_CONSOLE_LOGIN_ENABLED = { value = "true", scope = "RUN_TIME" }
-        AUTH_ALLOWED_IPS           = { value = "142.122.41.109", scope = "RUN_TIME" }
       }
     }
 
@@ -123,12 +122,17 @@ locals {
         scope  = "RUN_TIME"
         secret = false
       }
+      AUTH_ALLOWED_IPS = {
+        value  = var.runtime_secrets["AUTH_ALLOWED_IPS"]
+        scope  = "RUN_TIME"
+        secret = false
+      }
       NEXTAUTH_SECRET = {
-        value = var.runtime_secrets["NEXTAUTH_SECRET_WEB"]
+        value = var.imported_secret_ciphertext["NEXTAUTH_SECRET"]
         scope = "RUN_TIME"
       }
       AUTH_CONSOLE_SECRET = {
-        value = var.runtime_secrets["NEXTAUTH_SECRET_ADMIN"]
+        value = var.imported_secret_ciphertext["AUTH_CONSOLE_SECRET"]
         scope = "RUN_TIME"
       }
     }
@@ -145,7 +149,7 @@ locals {
         secret = false
       }
       SPRING_DATASOURCE_PASSWORD = {
-        value = var.runtime_secrets["DATABASE_PASSWORD_ORAZAKA_DB"]
+        value = var.imported_secret_ciphertext["SPRING_DATASOURCE_PASSWORD"]
         scope = "RUN_TIME"
       }
       IDENTITY_DB_URL = {
@@ -154,7 +158,7 @@ locals {
         secret = false
       }
       IDENTITY_DB_PASSWORD = {
-        value = var.runtime_secrets["DATABASE_PASSWORD_KRIZAKA_USERS_DB"]
+        value = var.imported_secret_ciphertext["IDENTITY_DB_PASSWORD"]
         scope = "RUN_TIME"
       }
       STUDIO_DB_URL = {
@@ -163,7 +167,7 @@ locals {
         secret = false
       }
       STUDIO_DB_PASSWORD = {
-        value = var.runtime_secrets["DATABASE_PASSWORD_ORAZAKA_STUDIO_DB"]
+        value = var.imported_secret_ciphertext["STUDIO_DB_PASSWORD"]
         scope = "RUN_TIME"
       }
       KNOWLEDGE_DB_URL = {
@@ -172,7 +176,7 @@ locals {
         secret = false
       }
       KNOWLEDGE_DB_PASSWORD = {
-        value = var.runtime_secrets["DATABASE_PASSWORD_ORAZAKA_KNOWLEDGE_DB"]
+        value = var.imported_secret_ciphertext["KNOWLEDGE_DB_PASSWORD"]
         scope = "RUN_TIME"
       }
       AUTOMATION_DB_URL = {
@@ -181,11 +185,11 @@ locals {
         secret = false
       }
       AUTOMATION_DB_PASSWORD = {
-        value = var.runtime_secrets["DATABASE_PASSWORD_ORAZAKA_AUTOMATION_DB"]
+        value = var.imported_secret_ciphertext["AUTOMATION_DB_PASSWORD"]
         scope = "RUN_TIME"
       }
       RABBITMQ_PASS = {
-        value = var.runtime_secrets["RABBITMQ_PASS"]
+        value = var.imported_secret_ciphertext["RABBITMQ_PASS"]
         scope = "RUN_TIME"
       }
       RABBITMQ_CA_CERT_BASE64 = {
@@ -194,23 +198,23 @@ locals {
         secret = false
       }
       IDENTITY_JWT_SECRET = {
-        value = var.runtime_secrets["IDENTITY_JWT_SECRET"]
+        value = var.imported_secret_ciphertext["IDENTITY_JWT_SECRET"]
         scope = "RUN_TIME"
       }
       CRYPTO_KEY = {
-        value = var.runtime_secrets["CRYPTO_KEY"]
+        value = var.imported_secret_ciphertext["CRYPTO_KEY"]
         scope = "RUN_TIME"
       }
       CRYPTO_SALT = {
-        value = var.runtime_secrets["CRYPTO_SALT"]
+        value = var.imported_secret_ciphertext["CRYPTO_SALT"]
         scope = "RUN_TIME"
       }
       MEDIA_ENCRYPTION_KEY = {
-        value = var.runtime_secrets["MEDIA_ENCRYPTION_KEY"]
+        value = var.imported_secret_ciphertext["MEDIA_ENCRYPTION_KEY"]
         scope = "RUN_TIME"
       }
       MEDIA_STORAGE_API_KEY = {
-        value = var.runtime_secrets["MEDIA_STORAGE_API_KEY"]
+        value = var.imported_secret_ciphertext["MEDIA_STORAGE_API_KEY"]
         scope = "RUN_TIME"
       }
       BILLING_DB_URL = {
@@ -219,22 +223,22 @@ locals {
         secret = false
       }
       BILLING_DB_PASSWORD = {
-        value = var.runtime_secrets["BILLING_DB_PASSWORD"]
+        value = var.imported_secret_ciphertext["BILLING_DB_PASSWORD"]
         scope = "RUN_TIME"
       }
       AI_INFERENCE_KEY = {
-        value = var.runtime_secrets["AI_INFERENCE_KEY"]
+        value = var.imported_secret_ciphertext["AI_INFERENCE_KEY"]
         scope = "RUN_TIME"
       }
       AI_INFERENCE_KEY_ALL = {
-        value = var.runtime_secrets["AI_INFERENCE_KEY_ALL"]
+        value = var.imported_secret_ciphertext["AI_INFERENCE_KEY_ALL"]
         scope = "RUN_TIME"
       }
     }
 
     gpu-relay = {
       AI_GPU_RELAY_PASSWORD = {
-        value = var.runtime_secrets["AI_GPU_RELAY_PASSWORD"]
+        value = var.imported_secret_ciphertext["AI_GPU_RELAY_PASSWORD"]
         scope = "RUN_TIME"
       }
     }
@@ -248,6 +252,7 @@ module "orazaka" {
   region = "tor"
 
   components         = local.components
+  service_order      = ["web", "core", "gpu-relay"]
   sensitive_env_vars = local.sensitive_env_vars
   domains = [
     { domain = "www.orazaka.com", type = "PRIMARY" },
@@ -257,7 +262,7 @@ module "orazaka" {
   ]
 
   features = ["buildpack-stack=ubuntu-22"]
-  vpc_id   = "60296b32-efad-49be-bb41-321b1b6cc328"
+  vpc_id   = var.runtime_secrets["VPC_ID"]
 
   ingress_rules = [
     {
