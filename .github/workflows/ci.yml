@@ -1,0 +1,61 @@
+# Checks every pull request with no cloud credentials: nothing here reaches a live resource (AGENTS.md « Never apply »).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tofu:
+    name: fmt · validate · test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: OpenTofu version from .tool-versions
+        id: versions
+        run: echo "tofu=$(awk '$1=="opentofu"{print $2}' .tool-versions)" >> "$GITHUB_OUTPUT"
+      - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version: ${{ steps.versions.outputs.tofu }}
+          tofu_wrapper: false
+      - name: tofu fmt -check
+        run: tofu fmt -check -recursive -diff
+      - name: tofu init, validate and test (every module and stack)
+        run: ./scripts/check.sh
+
+  tflint:
+    name: tflint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: tflint version from .tool-versions
+        id: versions
+        run: echo "tflint=v$(awk '$1=="tflint"{print $2}' .tool-versions)" >> "$GITHUB_OUTPUT"
+      - uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
+        with:
+          tflint_version: ${{ steps.versions.outputs.tflint }}
+      - run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: tflint --recursive --config "$GITHUB_WORKSPACE/.tflint.hcl" --format compact
+
+  checkov:
+    name: checkov
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: bridgecrewio/checkov-action@99bb2caf247dfd9f03cf984373bc6043d4e32ebf # v12.1347.0
+        with:
+          directory: .
+          framework: terraform,github_actions
+          config_file: .checkov.yml
+          quiet: true
+          soft_fail: false

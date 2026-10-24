@@ -1,0 +1,6 @@
+# checkov: static security checks of the OpenTofu code and the workflows (no credentials, no live call).
+# A skipped check is written here with its reason, never silenced in CI.
+compact: true
+download-external-modules: false
+skip-path:
+  - .terraform

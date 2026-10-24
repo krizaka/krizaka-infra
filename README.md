@@ -38,3 +38,9 @@ providers/<provider>/<role>/    the adapter (digitalocean first)
 stacks/<env>/<product>/         one stack per product and environment (dev today)
 docs/                           plan, runbooks, the inventory
 ```
+
+## Checks
+
+Every pull request runs `.github/workflows/ci.yml`, with **no cloud credentials**: `tofu fmt -check`, `tofu validate`
+and `tofu test` (mocked providers) on every module and stack (`scripts/check.sh`, the same locally), `tflint` and
+`checkov`. Versions are pinned in `.tool-versions`. State, plan files and `*.tfvars` are git-ignored.
