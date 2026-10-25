@@ -22,7 +22,7 @@ locals {
     { key = "AUTH_TRUST_HOST", value = "true" },
     { key = "AUTH_CONSOLE_LOGIN_ENABLED", value = "true" },
     { key = "AUTH_CONSOLE_SECRET", secret = true },
-    { key = "AUTH_ALLOWED_IPS", value = "142.122.41.109" },
+    { key = "AUTH_ALLOWED_IPS", external = true }, # an IP is personal data: read from the running app, never written here
   ]
   core_envs = [
     { key = "CORE_REBUILD", scope = "BUILD_TIME", external = true },
@@ -209,7 +209,7 @@ module "broker" {
   firewall = {
     name = "orazaka-broker-dev"
     inbound = [
-      { protocol = "tcp", ports = "22", sources = ["142.122.41.109"] },
+      { protocol = "tcp", ports = "22", sources = var.operator_ssh_sources },
       { protocol = "tcp", ports = "5671", sources = ["10.118.0.0/20"] },
     ]
     outbound = [

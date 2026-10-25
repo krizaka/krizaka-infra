@@ -52,3 +52,7 @@ added, because the provider fills `spec.domain` on read only when the state alre
 none (`flattenAppSpec`, terraform-provider-digitalocean 2.106.0). The live spec lists the same four domains with the
 same types (`spec.domains`, unchanged in the plan), so the first apply would send App Platform the spec it runs, and
 every plan after it says « No changes ». That apply is Oussama's call.
+
+## Personal values
+
+The operator's IP addresses never appear in this repository. `AUTH_ALLOWED_IPS` is `external` (read from the running app with the other env values), and the broker's SSH allowlist comes from `TF_VAR_operator_ssh_sources` (a JSON list), set in your shell before a plan.
