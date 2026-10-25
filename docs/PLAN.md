@@ -42,7 +42,7 @@ Find every app spec with `doctl apps spec get <id>` (read-only) and the reposito
 3. The same for the other App Platform apps, one stack per product.
 4. [x] (orazaka-dev's databases; the rest with `stacks/dev/shared`) `modules/database` and `providers/digitalocean/database` for `krizaka-dev-pg`: the cluster and the database list. Users
    and passwords stay with the products' migrations.
-5. `modules/dns` and `providers/porkbun/dns`, for the records the apps need (CNAME, TXT verification).
+5. [x] `modules/dns` and `providers/porkbun/dns`, and `stacks/dns`: the 8 Porkbun domains, imported (krizaka-infra#9).
 6. [x] `modules/broker`: the droplet, firewall and VPC, imported as is.
 7. `modules/cdn` (Bunny): the zones, read-only first.
 8. `docs/PORTABILITY.md`: what moving a product to another provider takes, proved on one app with a second adapter that is validated only, never applied.
