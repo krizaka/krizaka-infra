@@ -20,6 +20,10 @@ a product can move to another provider by swapping an adapter, not by rewriting 
 **Planning.** The plan, the inventory and the rules are in [docs/PLAN.md](docs/PLAN.md). Nothing here changes live
 infrastructure until a stack's `tofu plan` against the running resources is a **no-op** (imported, not recreated).
 
+The role modules (`app`, `database`, `broker`, `dns`, `cdn`) and the DigitalOcean adapters are written and tested; the
+first stack, [`stacks/dev/orazaka`](stacks/dev/orazaka), imports orazaka-dev's 10 resources and its first plan
+(2026-10-24) changes nothing but one import artifact of the provider, explained in its README.
+
 ## Principles
 
 - **The database is the source of truth; infrastructure is reproducible.** Every resource can be rebuilt from this
@@ -30,7 +34,7 @@ infrastructure until a stack's `tofu plan` against the running resources is a **
 - **Import before change.** Existing resources are imported; the first plan of every stack changes nothing.
 - **Cost is a decision.** No new paid resource without Oussama's go (over $5/month).
 
-## Layout (target)
+## Layout
 
 ```
 modules/<role>/                 provider-neutral interface (variables, outputs)

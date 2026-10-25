@@ -16,3 +16,7 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+
+# Lock files are committed for stacks only (the roots); modules inherit the stack's.
+modules/**/.terraform.lock.hcl
+providers/**/.terraform.lock.hcl

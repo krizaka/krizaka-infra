@@ -37,15 +37,20 @@ Find every app spec with `doctl apps spec get <id>` (read-only) and the reposito
 ## 3. Order of work (one PR each)
 
 1. [x] The repository's CI: `tofu fmt`, `validate`, `tflint` and `tofu test` with mocked providers. A `.tool-versions` / `mise.toml` pinning OpenTofu.
-2. `modules/app` and `providers/digitalocean/app`. Translate `orazaka-dev.app.yaml` into a stack with **the same** spec.
+2. [x] `modules/app` and `providers/digitalocean/app`. Translate `orazaka-dev.app.yaml` into a stack with **the same** spec.
    Write the import commands in the stack's README. Acceptance: the plan is a no-op (run by Oussama).
 3. The same for the other App Platform apps, one stack per product.
-4. `modules/database` and `providers/digitalocean/database` for `krizaka-dev-pg`: the cluster and the database list. Users
+4. [x] (orazaka-dev's databases; the rest with `stacks/dev/shared`) `modules/database` and `providers/digitalocean/database` for `krizaka-dev-pg`: the cluster and the database list. Users
    and passwords stay with the products' migrations.
 5. `modules/dns` and `providers/porkbun/dns`, for the records the apps need (CNAME, TXT verification).
-6. `modules/broker`: the droplet, firewall and VPC, imported as is.
+6. [x] `modules/broker`: the droplet, firewall and VPC, imported as is.
 7. `modules/cdn` (Bunny): the zones, read-only first.
 8. `docs/PORTABILITY.md`: what moving a product to another provider takes, proved on one app with a second adapter that is validated only, never applied.
+
+Progress (2026-10-24): `stacks/dev/orazaka` holds the app, the cluster with orazaka-dev's six databases, and the broker
+(droplet and firewall). Its first read-only plan imports 10 resources and changes none but an import artifact of the
+provider (the app's `spec.domain` blocks, see the stack's README); the interfaces of `dns` and `cdn` are written, their
+adapters come with steps 5 and 7.
 
 ## 4. Never
 
