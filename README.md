@@ -12,6 +12,7 @@ PostgreSQL, a broker droplet, DNS at Porkbun, media on Bunny) described in OpenT
 a product can move to another provider by swapping an adapter, not by rewriting its deployment.
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-infra&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-infra) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-infra&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-infra) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-infra&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-infra) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-infra&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-infra) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=krizaka_krizaka-infra&metric=coverage)](https://sonarcloud.io/summary/new_code?id=krizaka_krizaka-infra)
 
 </div>
 
