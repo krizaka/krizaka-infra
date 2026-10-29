@@ -2,10 +2,10 @@
 # one entry in its zone's file (README « Add a subdomain »). Imported (imports.tf), never recreated.
 locals {
   zones = {
-    "krizaka.com"   = local.krizaka_com
-    "orazaka.com"   = local.orazaka_com
-    "yomizaka.com"  = local.yomizaka_com
-    "akinaza.com"   = local.akinaza_com
+    "krizaka.com"  = local.krizaka_com
+    "orazaka.com"  = local.orazaka_com
+    "yomizaka.com" = local.yomizaka_com
+    "akinaza.com"  = local.akinaza_com
   }
 }
 
