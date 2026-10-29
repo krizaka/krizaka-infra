@@ -69,18 +69,32 @@ Not now. Everything Krizaka runs is managed (DigitalOcean App Platform, Bunny, G
 configure. Ansible becomes useful the day we run our own machines (a GPU worker, a self-hosted runner). Revisit then,
 through an ADR in this repository.
 
+## Krizaka Lab move (krizaka-motion#69), applied by the CTO after the founder's go
+
+The lab changes address: `motion.krizaka.com` becomes `lab.krizaka.com`. Nothing here is applied by a pull request.
+
+1. Rename the repository `krizaka-motion` to `krizaka-lab` and merge its pull request (its `CNAME` file becomes `lab.krizaka.com`).
+2. `tofu apply` in this stack creates `lab` CNAME `krizaka.github.io` (TTL 600). Then set the Pages custom domain of `krizaka-lab`.
+3. GitHub Pages cannot answer a 301 from the old host once the `CNAME` file changed, so `motion` becomes a Porkbun URL forward:
+   delete the `motion-cname` record (remove the entry and its import in this stack in the same pull request, plan it, apply),
+   then call `POST https://api.porkbun.com/api/json/v3/domain/addUrlForward/krizaka.com` with
+   `{"subdomain":"motion","location":"https://lab.krizaka.com","type":"permanent","includePath":"yes","wildcard":"no"}`
+   (keys through `secret.sh`). Forwards are not Terraform resources: this section is their record.
+4. Check: `curl -sI https://motion.krizaka.com/story` answers 301 with `location: https://lab.krizaka.com/story`.
+
 ## Records and their purpose
 
 Generated from the zone files.
 
-### krizaka.com (27)
+### krizaka.com (28)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
 | `@` | ALIAS | app | krizaka.com serves the krizaka-com app (App Platform) |
 | `blog` | CNAME | app | blog.krizaka.com serves the krizaka-blog app (App Platform) |
 | `java` | CNAME | app | java.krizaka.com serves the krizaka-java-site app (App Platform) |
-| `motion` | CNAME | app | motion.krizaka.com serves the krizaka-motion site (GitHub Pages) |
+| `lab` | CNAME | app | lab.krizaka.com serves the krizaka-lab site (GitHub Pages) |
+| `motion` | CNAME | app | motion.krizaka.com is the former address of the lab (to become a 301 to lab.krizaka.com, see stacks/dns/README.md) |
 | `ts` | CNAME | app | ts.krizaka.com serves the krizaka-ts-site app (App Platform) |
 | `ui` | CNAME | app | ui.krizaka.com serves the krizaka-ui-site app (App Platform) |
 | `www` | CNAME | app | www.krizaka.com serves the krizaka-com app (App Platform) |
