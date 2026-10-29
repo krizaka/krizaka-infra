@@ -6,6 +6,7 @@ locals {
     "orazaka.com"  = local.orazaka_com
     "yomizaka.com" = local.yomizaka_com
     "akinaza.com"  = local.akinaza_com
+    "akinaza.shop" = local.akinaza_shop
   }
 }
 

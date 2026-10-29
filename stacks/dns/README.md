@@ -81,6 +81,17 @@ The lab changes address: `motion.krizaka.com` becomes `lab.krizaka.com`. Nothing
    (keys through `secret.sh`). Forwards are not Terraform resources: this section is their record.
 4. Check: `curl -sI https://motion.krizaka.com/story` answers 301 with `location: https://lab.krizaka.com/story`.
 
+## akinaza.shop: the shops' domain (krizaka/akinaza#538), to apply by Oussama
+
+`zone_akinaza_shop.tf` adds three records (`@` ALIAS, `*` and `www` CNAME) to the akinaza-dev App Platform app. They are created, not imported:
+the plan must say `3 to add, 0 to change, 0 to destroy` and nothing else. Order:
+
+1. At Porkbun, delete the parking records of `akinaza.shop` (ALIAS `@` and CNAME `*` towards `pixie`/`uixie.porkbun.com`), else the creation is refused.
+2. `tofu apply` in this stack (state local, as above). Check `dig +short x.akinaza.shop CNAME`.
+3. Only then apply the app spec of `krizaka/akinaza` (`deploy/digitalocean/app.yaml`: `akinaza.shop` with its wildcard, `www.akinaza.shop`, `APP_SHOP_DOMAIN`):
+   App Platform asks for TXT records to issue the wildcard certificate (the `_acme-challenge` ones, as for `akinaza.com`): add them here as `kind = "acme"`, apply again.
+4. `curl -sI https://pattes-saint-henri.akinaza.shop/fr` answers 200; `https://pattes-saint-henri.akinaza.com/` answers 308 to it.
+
 ## Records and their purpose
 
 Generated from the zone files.
@@ -209,3 +220,11 @@ Generated from the zone files.
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
+
+### akinaza.shop (3)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | ALIAS | app | akinaza.shop leads to the app (308 to www.akinaza.com, App Platform) |
+| `*` | CNAME | app | *.akinaza.shop serves the shops of the akinaza-dev app (App Platform) |
+| `www` | CNAME | app | www.akinaza.shop leads to the app (308 to www.akinaza.com, App Platform) |
