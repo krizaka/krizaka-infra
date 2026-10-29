@@ -36,6 +36,8 @@ jobs:
       PORKBUN_SECRET_API_KEY: ${{ secrets.PORKBUN_SECRET_KEY }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: OpenTofu version from .tool-versions
         id: versions
         run: echo "tofu=$(awk '$1=="opentofu"{print $2}' .tool-versions)" >> "$GITHUB_OUTPUT"
