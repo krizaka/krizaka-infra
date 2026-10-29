@@ -2,13 +2,13 @@
 locals {
   krizaka_com = {
     # apps and sites
-    "apex-alias"   = { name = "@", type = "ALIAS", value = "krizaka-com-xfzbi.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "krizaka.com serves the krizaka-com app (App Platform)" }
-    "blog-cname"   = { name = "blog", type = "CNAME", value = "krizaka-blog-krdbv.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "blog.krizaka.com serves the krizaka-blog app (App Platform)" }
-    "java-cname"   = { name = "java", type = "CNAME", value = "krizaka-java-site-zx8wd.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "java.krizaka.com serves the krizaka-java-site app (App Platform)" }
-    "motion-cname" = { name = "motion", type = "CNAME", value = "krizaka.github.io", ttl = 600, prio = 0, kind = "app", purpose = "motion.krizaka.com serves the krizaka-motion site (GitHub Pages)" }
-    "ts-cname"     = { name = "ts", type = "CNAME", value = "krizaka-ts-site-l4whn.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "ts.krizaka.com serves the krizaka-ts-site app (App Platform)" }
-    "ui-cname"     = { name = "ui", type = "CNAME", value = "krizaka-ui-site-zlyog.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "ui.krizaka.com serves the krizaka-ui-site app (App Platform)" }
-    "www-cname"    = { name = "www", type = "CNAME", value = "krizaka-com-xfzbi.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "www.krizaka.com serves the krizaka-com app (App Platform)" }
+    "apex-alias" = { name = "@", type = "ALIAS", value = "krizaka-com-xfzbi.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "krizaka.com serves the krizaka-com app (App Platform)" }
+    "blog-cname" = { name = "blog", type = "CNAME", value = "krizaka-blog-krdbv.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "blog.krizaka.com serves the krizaka-blog app (App Platform)" }
+    "java-cname" = { name = "java", type = "CNAME", value = "krizaka-java-site-zx8wd.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "java.krizaka.com serves the krizaka-java-site app (App Platform)" }
+    "lab-cname"  = { name = "lab", type = "CNAME", value = "krizaka.github.io", ttl = 600, prio = 0, kind = "app", purpose = "lab.krizaka.com serves the krizaka-lab site (GitHub Pages)" }
+    "ts-cname"   = { name = "ts", type = "CNAME", value = "krizaka-ts-site-l4whn.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "ts.krizaka.com serves the krizaka-ts-site app (App Platform)" }
+    "ui-cname"   = { name = "ui", type = "CNAME", value = "krizaka-ui-site-zlyog.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "ui.krizaka.com serves the krizaka-ui-site app (App Platform)" }
+    "www-cname"  = { name = "www", type = "CNAME", value = "krizaka-com-xfzbi.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "www.krizaka.com serves the krizaka-com app (App Platform)" }
     # MAIL (Mailgun, Resend, DKIM, SPF, DMARC, forwarding): do not touch without a mail test
     "apex-mx-1"                 = { name = "@", type = "MX", value = "fwd1.porkbun.com", ttl = 600, prio = 10, kind = "mail", purpose = "Porkbun email forwarding for krizaka.com (MX, priority 10)" }
     "apex-mx-2"                 = { name = "@", type = "MX", value = "fwd2.porkbun.com", ttl = 600, prio = 20, kind = "mail", purpose = "Porkbun email forwarding for krizaka.com (MX, priority 20)" }
