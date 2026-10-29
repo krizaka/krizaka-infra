@@ -48,7 +48,6 @@ plan can see (it reads only the records in the code): put it in the file with an
 
 ## Mail records: do not touch without a mail test
 
-Mailgun (`mg.krizaka.com`, DKIM of `www.krizaka.com`), Resend (`mg.orochia.com`), DKIM keys, SPF, DMARC and Porkbun's
 email forwarding (MX) are `kind = "mail"` and listed by the `mail_records` output. Before changing one, send a test
 message through the service and read the headers (SPF, DKIM and DMARC pass). Verification TXT records (Google Search
 Console, GitHub, Maven Central) are `kind = "verification"`: deleting one un-verifies the owner. There is no Bing record
@@ -139,24 +138,9 @@ Generated from the zone files.
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 
-### orochia.com (18)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | orochia.com serves the orochia-dev app (App Platform) |
-| `admin` | CNAME | app | admin.orochia.com serves the orochia-dev app (App Platform) |
-| `dev` | CNAME | app | dev.orochia.com serves the orochia-dev app (App Platform) |
-| `www` | CNAME | app | www.orochia.com serves the orochia-dev app (App Platform) |
-| `@` | MX | mail | Porkbun email forwarding for orochia.com (MX, priority 10) |
-| `@` | MX | mail | Porkbun email forwarding for orochia.com (MX, priority 20) |
-| `@` | TXT | mail | SPF for Porkbun email forwarding of orochia.com |
-| `_dmarc` | TXT | mail | DMARC policy of orochia.com (reports only, p=none) |
-| `resend._domainkey.mg` | TXT | mail | DKIM public key (Resend) for mg.orochia.com |
-| `rsend.mg` | CNAME | mail | Resend sending/tracking domain rsend.mg.orochia.com |
-| `send.mg` | CNAME | mail | Resend sending/tracking domain send.mg.orochia.com |
-| `@` | TXT | verification | Google Search Console ownership of orochia.com |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of orochia.com (certificate issuance), kept as is |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of orochia.com (certificate issuance), kept as is |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
@@ -202,59 +186,25 @@ Generated from the zone files.
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 
-### yororis.com (15)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | yororis.com serves the yororis-qa app (App Platform) |
-| `dev` | CNAME | app | dev.yororis.com serves the yororis-qa app (App Platform) |
-| `qa` | CNAME | app | qa.yororis.com serves the yororis-qa app (App Platform) |
-| `www` | CNAME | app | www.yororis.com serves the yororis-qa app (App Platform) |
-| `@` | MX | mail | Porkbun email forwarding for yororis.com (MX, priority 10) |
-| `@` | MX | mail | Porkbun email forwarding for yororis.com (MX, priority 20) |
-| `@` | TXT | mail | SPF for Porkbun email forwarding of yororis.com |
-| `_dmarc` | TXT | mail | DMARC policy of yororis.com (reports only, p=none) |
-| `@` | TXT | verification | Google Search Console ownership of yororis.com |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of yororis.com (certificate issuance), kept as is |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of yororis.com (certificate issuance), kept as is |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 
-### yasakia.com (15)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | yasakia.com serves the yasakia-dev app (App Platform) |
-| `admin` | CNAME | app | admin.yasakia.com serves the yasakia-dev app (App Platform) |
-| `dev` | CNAME | app | dev.yasakia.com serves the yasakia-dev app (App Platform) |
-| `www` | CNAME | app | www.yasakia.com serves the yasakia-dev app (App Platform) |
-| `@` | MX | mail | Porkbun email forwarding for yasakia.com (MX, priority 10) |
-| `@` | MX | mail | Porkbun email forwarding for yasakia.com (MX, priority 20) |
-| `@` | TXT | mail | SPF for Porkbun email forwarding of yasakia.com |
-| `_dmarc` | TXT | mail | DMARC policy of yasakia.com (reports only, p=none) |
-| `@` | TXT | verification | Google Search Console ownership of yasakia.com |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of yasakia.com (certificate issuance), kept as is |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of yasakia.com (certificate issuance), kept as is |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 
-### kachizaka.com (13)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | kachizaka.com serves the kachizaka-dev app (App Platform) |
-| `admin` | CNAME | app | admin.kachizaka.com serves the kachizaka-dev app (App Platform) |
-| `dev` | CNAME | app | dev.kachizaka.com serves the kachizaka-dev app (App Platform) |
-| `www` | CNAME | app | www.kachizaka.com serves the kachizaka-dev app (App Platform) |
-| `@` | MX | mail | Porkbun email forwarding for kachizaka.com (MX, priority 10) |
-| `@` | MX | mail | Porkbun email forwarding for kachizaka.com (MX, priority 20) |
-| `@` | TXT | mail | SPF for Porkbun email forwarding of kachizaka.com |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of kachizaka.com (certificate issuance), kept as is |
-| `_acme-challenge` | TXT | acme | ACME DNS-01 challenge of kachizaka.com (certificate issuance), kept as is |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
 | `@` | NS | nameserver | Porkbun default nameserver of the zone |
