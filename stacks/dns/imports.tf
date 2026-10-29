@@ -16,8 +16,8 @@ import {
 }
 
 import {
-  to = module.dns_porkbun["krizaka.com"].porkbun_dns_record.this["motion-cname"]
-  id = "krizaka.com:597851832"
+  to = module.dns_porkbun["krizaka.com"].porkbun_dns_record.this["lab-cname"]
+  id = "krizaka.com:598946764"
 }
 
 import {

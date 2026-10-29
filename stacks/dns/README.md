@@ -73,10 +73,10 @@ through an ADR in this repository.
 
 The lab changes address: `motion.krizaka.com` becomes `lab.krizaka.com`. Nothing here is applied by a pull request.
 
-1. Rename the repository `krizaka-motion` to `krizaka-lab` and merge its pull request (its `CNAME` file becomes `lab.krizaka.com`).
+1. Rename the repository `krizaka-motion` to `krizaka-lab` and merge its pull request (its `CNAME` file becomes `lab.krizaka.com`). Done 2026-10-29.
 2. `tofu apply` in this stack creates `lab` CNAME `krizaka.github.io` (TTL 600). Then set the Pages custom domain of `krizaka-lab`.
 3. GitHub Pages cannot answer a 301 from the old host once the `CNAME` file changed, so `motion` becomes a Porkbun URL forward:
-   delete the `motion-cname` record (remove the entry and its import in this stack in the same pull request, plan it, apply),
+   the `motion` record is no longer in this stack (entry and import removed; the live record is deleted through the Porkbun API just before the forward is added),
    then call `POST https://api.porkbun.com/api/json/v3/domain/addUrlForward/krizaka.com` with
    `{"subdomain":"motion","location":"https://lab.krizaka.com","type":"permanent","includePath":"yes","wildcard":"no"}`
    (keys through `secret.sh`). Forwards are not Terraform resources: this section is their record.
@@ -86,7 +86,7 @@ The lab changes address: `motion.krizaka.com` becomes `lab.krizaka.com`. Nothing
 
 Generated from the zone files.
 
-### krizaka.com (28)
+### krizaka.com (27)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
@@ -94,7 +94,6 @@ Generated from the zone files.
 | `blog` | CNAME | app | blog.krizaka.com serves the krizaka-blog app (App Platform) |
 | `java` | CNAME | app | java.krizaka.com serves the krizaka-java-site app (App Platform) |
 | `lab` | CNAME | app | lab.krizaka.com serves the krizaka-lab site (GitHub Pages) |
-| `motion` | CNAME | app | motion.krizaka.com is the former address of the lab (to become a 301 to lab.krizaka.com, see stacks/dns/README.md) |
 | `ts` | CNAME | app | ts.krizaka.com serves the krizaka-ts-site app (App Platform) |
 | `ui` | CNAME | app | ui.krizaka.com serves the krizaka-ui-site app (App Platform) |
 | `www` | CNAME | app | www.krizaka.com serves the krizaka-com app (App Platform) |

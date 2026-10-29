@@ -6,7 +6,6 @@ locals {
     "blog-cname"   = { name = "blog", type = "CNAME", value = "krizaka-blog-krdbv.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "blog.krizaka.com serves the krizaka-blog app (App Platform)" }
     "java-cname"   = { name = "java", type = "CNAME", value = "krizaka-java-site-zx8wd.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "java.krizaka.com serves the krizaka-java-site app (App Platform)" }
     "lab-cname"    = { name = "lab", type = "CNAME", value = "krizaka.github.io", ttl = 600, prio = 0, kind = "app", purpose = "lab.krizaka.com serves the krizaka-lab site (GitHub Pages)" }
-    "motion-cname" = { name = "motion", type = "CNAME", value = "krizaka.github.io", ttl = 600, prio = 0, kind = "app", purpose = "motion.krizaka.com is the former address of the lab (to become a 301 to lab.krizaka.com, see stacks/dns/README.md)" }
     "ts-cname"     = { name = "ts", type = "CNAME", value = "krizaka-ts-site-l4whn.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "ts.krizaka.com serves the krizaka-ts-site app (App Platform)" }
     "ui-cname"     = { name = "ui", type = "CNAME", value = "krizaka-ui-site-zlyog.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "ui.krizaka.com serves the krizaka-ui-site app (App Platform)" }
     "www-cname"    = { name = "www", type = "CNAME", value = "krizaka-com-xfzbi.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "www.krizaka.com serves the krizaka-com app (App Platform)" }
