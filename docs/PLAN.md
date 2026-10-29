@@ -8,12 +8,10 @@ Asked by Oussama (2026-10-23): « pense aussi à un infra as code à créer pour
 | :--- | :--- | :--- | :--- |
 | App Platform | `orazaka-dev` | tor1 | `krizaka/orazaka` `infra/deploy/orazaka-dev.app.yaml` (+ `scripts/dev-deploy.mjs`) |
 | App Platform | `orazaka-admin-dev` | tor1 | `krizaka/orazaka` `infra/deploy/orazaka-admin-dev.app.yaml` |
-| App Platform | `yomizaka-dev`, `akinaza-dev`, `kachizaka-dev`, `yasakia-dev`, `yororis-qa`, `orochia-dev`, `orochia-admin-dev` | tor1 | each product repository's app spec (`.do/` or `infra/`) |
 | App Platform (static) | `krizaka-com`, `krizaka-blog`, `krizaka-ui-site`, `krizaka-java-site`, `krizaka-ts-site` | tor1 | each site's repository |
 | Managed PostgreSQL | `krizaka-dev-pg` (pg 18, db-s-1vcpu-1gb) | tor1 | created by hand; databases and roles by the products' migrations and `dev-deploy.mjs` |
 | Droplet | `orazaka-broker-dev` (RabbitMQ, TLS) | tor1 | `krizaka/orazaka` `scripts/dev-deploy.mjs broker` |
 | DNS | `krizaka.com`, `orazaka.com`, `yomizaka.com`, `akinaza.com`, … | Porkbun | by hand and scripts (API v3) |
-| CDN / storage | zone `krizaka-assets`, `orochia-dev` | Bunny | `krizaka/krizaka-com` `scripts/bunny-layout.mjs`, `cdn-assets.mjs` |
 
 Find every app spec with `doctl apps spec get <id>` (read-only) and the repositories' `*.app.yaml`.
 
