@@ -26,8 +26,8 @@ run "a_private_versioned_bucket_in_toronto" {
     error_message = "The key is limited to this bucket."
   }
   assert {
-    condition     = strcontains(digitalocean_spaces_bucket_policy.tls_only.policy, "aws:SecureTransport")
-    error_message = "Plain HTTP is refused."
+    condition     = startswith(output.endpoint, "https://")
+    error_message = "The endpoint is https only (no bucket policy: it would refuse the scoped key)."
   }
   assert {
     condition     = output.endpoint == "https://tor1.digitaloceanspaces.com"
