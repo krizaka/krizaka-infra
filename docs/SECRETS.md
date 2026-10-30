@@ -17,3 +17,4 @@ deploy scripts; the code here declares them `sensitive` and never reads them bac
 | Variable | Stack | What |
 | :--- | :--- | :--- |
 | `TF_VAR_env_values` | `stacks/dev/orazaka` | JSON map `"<component>/<KEY>"` → value: orazaka-dev's SECRET envs and the values kept out of git (database URLs, the broker's CA, app identifiers). Read from the running app with `scripts/env-values-from-live.py` (README), or from the vault. |
+| `SPACES_ACCESS_KEY_ID`, `SPACES_SECRET_ACCESS_KEY` | `stacks/prod/yomizaka-documents` | The operator's Spaces keys, which the DigitalOcean provider needs to create the bucket and its policy. Not the application's key (that one is created by the stack, limited to the bucket, and is typed once in Yomizaka's admin screen). |
