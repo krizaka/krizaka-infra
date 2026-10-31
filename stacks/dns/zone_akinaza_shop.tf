@@ -6,6 +6,7 @@ locals {
   akinaza_shop = {
     "apex-alias"     = { name = "@", type = "ALIAS", value = "akinaza-dev-hfdcl.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "akinaza.shop leads to the app (308 to www.akinaza.com, App Platform)" }
     "wildcard-cname" = { name = "*", type = "CNAME", value = "akinaza-dev-hfdcl.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "*.akinaza.shop serves the shops of the akinaza-dev app (App Platform)" }
+    "apex-txt-gsc"   = { name = "@", type = "TXT", value = "google-site-verification=hHdCh8J-52vCxL90ezxg-wfF8SUQrn-PmG9jfJEPJwQ", ttl = 600, prio = 0, kind = "verification", purpose = "Google Search Console ownership of akinaza.shop (the shops' pages)" }
     "www-cname"      = { name = "www", type = "CNAME", value = "akinaza-dev-hfdcl.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "www.akinaza.shop leads to the app (308 to www.akinaza.com, App Platform)" }
   }
 }
