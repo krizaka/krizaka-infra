@@ -92,6 +92,40 @@ the plan must say `3 to add, 0 to change, 0 to destroy` and nothing else. Order:
    App Platform asks for TXT records to issue the wildcard certificate (the `_acme-challenge` ones, as for `akinaza.com`): add them here as `kind = "acme"`, apply again.
 4. `curl -sI https://pattes-saint-henri.akinaza.shop/fr` answers 200; `https://pattes-saint-henri.akinaza.com/` answers 308 to it.
 
+## Commercial domains (krizaka-internal#2037), to apply by the CTO
+
+The products go to market under their commercial names (krizaka-internal#2033): **Verikora** (code name yomizaka), **Folioviv**
+(akinaza), **Sovkora** (orazaka), **Kridoc** (kachizaka, the managed storage). Every domain is kept; the code-name hosts stay as they
+are here and answer **301** (path and query kept) from the app itself, so **no record of an old zone changes**.
+
+Six zones are added, 24 records, all created (not imported): the plan must say `24 to add, 0 to change, 0 to destroy`.
+
+| Zone | Points to | Hosts |
+| :--- | :--- | :--- |
+| verikora.com | yomizaka-dev | `@`, `www`, `dev`, `admin` |
+| folioviv.com | akinaza-dev | `@`, `www`, `dev`, `admin` |
+| folioviv.app | akinaza-dev | `@`, `www` (HSTS-preloaded TLD: the app must have its certificate before any link is shared) |
+| folioviv.shop | akinaza-dev | `@`, `*`, `www` (per-shop TLS on the merchant-domain design, akinaza#654) |
+| sovkora.com | orazaka-dev | `@`, `www`, `dev`, `admin` |
+| kridoc.com | — | no host yet (the share-link host joins with krizaka-internal#1933); SPF `-all` and DMARC `reject`: it sends no mail |
+
+Order, one product at a time (Verikora → Folioviv → Sovkora):
+
+1. At Porkbun, delete the parking records of the zone (ALIAS `@` and CNAME `*` towards `pixie`/`uixie.porkbun.com`), else the creation is refused.
+2. `tofu apply` in this stack (state local, as above). Check `dig +short www.verikora.com CNAME`.
+3. In the product repository, add the new hosts to `deploy/digitalocean/app.yaml` (`domains:`; keep the old ones) and apply the spec.
+   App Platform asks for `_acme-challenge` TXT records for a wildcard (`*.folioviv.shop`): add them here as `kind = "acme"`, apply again.
+4. In the product, the canonical host becomes the new one (`APP_SITE_URL`, sitemap, hreflang, OG) and the app answers **301** from every
+   old host to the same path on the new one, one hop (the product slices #2038–#2040 carry it and its test).
+5. Check: `curl -sI https://dev.yomizaka.com/fr/x?y=1` → `301` with `location: https://dev.verikora.com/fr/x?y=1`;
+   `node scripts/check-seo-family.mjs --base https://www.verikora.com` green.
+
+**Mail.** Each product zone gets DMARC `p=none` now. SPF and DKIM are added when the product's sender (the mail provider of
+`MAIL_PROVIDER`) gives its keys for the new domain — a `kind = "mail"` record each, with a mail test — and no email uses the new
+domain before. **Search Console / Bing.** Verify each new domain by a DNS TXT record (never a file), then run **change of address**
+from the old property to the new one: a founder step if the console account is his (the card goes to Blocked for that step only).
+**Rollback.** Remove the zone from `main.tf` and apply: the old hosts never stopped serving.
+
 ## Records and their purpose
 
 Generated from the zone files.
@@ -228,3 +262,57 @@ Generated from the zone files.
 | `@` | ALIAS | app | akinaza.shop leads to the app (308 to www.akinaza.com, App Platform) |
 | `*` | CNAME | app | *.akinaza.shop serves the shops of the akinaza-dev app (App Platform) |
 | `www` | CNAME | app | www.akinaza.shop leads to the app (308 to www.akinaza.com, App Platform) |
+
+### verikora.com (5)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | ALIAS | app | verikora.com serves the yomizaka-dev app (App Platform) |
+| `www` | CNAME | app | www.verikora.com serves the yomizaka-dev app (App Platform) |
+| `dev` | CNAME | app | dev.verikora.com serves the yomizaka-dev app (App Platform) |
+| `admin` | CNAME | app | admin.verikora.com serves the yomizaka-dev app (App Platform) |
+| `_dmarc` | TXT | mail | DMARC policy of verikora.com (reports only, p=none until its sender's DKIM is live) |
+
+### folioviv.com (5)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | ALIAS | app | folioviv.com serves the akinaza-dev app (App Platform) |
+| `www` | CNAME | app | www.folioviv.com serves the akinaza-dev app (App Platform) |
+| `dev` | CNAME | app | dev.folioviv.com serves the akinaza-dev app (App Platform) |
+| `admin` | CNAME | app | admin.folioviv.com serves the akinaza-dev app (App Platform) |
+| `_dmarc` | TXT | mail | DMARC policy of folioviv.com (reports only, p=none until its sender's DKIM is live) |
+
+### folioviv.app (3)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | ALIAS | app | folioviv.app serves the akinaza-dev app (App Platform) |
+| `www` | CNAME | app | www.folioviv.app serves the akinaza-dev app (App Platform) |
+| `_dmarc` | TXT | mail | DMARC policy of folioviv.app (reports only, p=none until its sender's DKIM is live) |
+
+### folioviv.shop (4)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | ALIAS | app | folioviv.shop serves the akinaza-dev app (App Platform) |
+| `*` | CNAME | app | *.folioviv.shop serves the akinaza-dev app (App Platform) |
+| `www` | CNAME | app | www.folioviv.shop serves the akinaza-dev app (App Platform) |
+| `_dmarc` | TXT | mail | DMARC policy of folioviv.shop (reports only, p=none until its sender's DKIM is live) |
+
+### sovkora.com (5)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | ALIAS | app | sovkora.com serves the orazaka-dev app (App Platform) |
+| `www` | CNAME | app | www.sovkora.com serves the orazaka-dev app (App Platform) |
+| `dev` | CNAME | app | dev.sovkora.com serves the orazaka-dev app (App Platform) |
+| `admin` | CNAME | app | admin.sovkora.com serves the orazaka-dev app (App Platform) |
+| `_dmarc` | TXT | mail | DMARC policy of sovkora.com (reports only, p=none until its sender's DKIM is live) |
+
+### kridoc.com (2)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | TXT | mail | kridoc.com sends no mail yet: every sender is refused (SPF -all) |
+| `_dmarc` | TXT | mail | DMARC policy of kridoc.com: no mail is sent from it, a forged one is rejected |
