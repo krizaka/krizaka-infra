@@ -92,39 +92,31 @@ the plan must say `3 to add, 0 to change, 0 to destroy` and nothing else. Order:
    App Platform asks for TXT records to issue the wildcard certificate (the `_acme-challenge` ones, as for `akinaza.com`): add them here as `kind = "acme"`, apply again.
 4. `curl -sI https://pattes-saint-henri.akinaza.shop/fr` answers 200; `https://pattes-saint-henri.akinaza.com/` answers 308 to it.
 
-## Commercial domains (krizaka-internal#2037), to apply by the CTO
+## Commercial domains (krizaka-internal#2037, #2128), to apply by the CTO
 
 The products go to market under their commercial names (krizaka-internal#2033): **Verikora** (code name yomizaka), **Folioviv**
 (akinaza), **Sovkora** (orazaka), **Kridoc** (kachizaka, the managed storage). Every domain is kept; the code-name hosts stay as they
-are here and answer **301** (path and query kept) from the app itself, so **no record of an old zone changes**.
+are here, so **no record of an old zone changes**.
 
-Six zones are added, 24 records, all created (not imported): the plan must say `24 to add, 0 to change, 0 to destroy`.
+**ADR-022: a commercial name never serves a dev app.** Until a product's prod step, a commercial zone holds no record that targets an
+app: no apex ALIAS, no `www`, `dev`, `admin` or wildcard CNAME, nothing at `*.ondigitalocean.app` or a code-name host.
+`scripts/check-commercial-dns.sh` (run by `scripts/check.sh` and CI) fails on any such record. Each of the six zones holds only:
 
-| Zone | Points to | Hosts |
+| Record | Value | Why |
 | :--- | :--- | :--- |
-| verikora.com | yomizaka-dev | `@`, `www`, `dev`, `admin` |
-| folioviv.com | akinaza-dev | `@`, `www`, `dev`, `admin` |
-| folioviv.app | akinaza-dev | `@`, `www` (HSTS-preloaded TLD: the app must have its certificate before any link is shared) |
-| folioviv.shop | akinaza-dev | `@`, `*`, `www` (per-shop TLS on the merchant-domain design, akinaza#654) |
-| sovkora.com | orazaka-dev | `@`, `www`, `dev`, `admin` |
-| kridoc.com | — | no host yet (the share-link host joins with krizaka-internal#1933); SPF `-all` and DMARC `reject`: it sends no mail |
+| `@` TXT | `v=spf1 -all` | the zone sends no mail yet |
+| `_dmarc` TXT | `v=DMARC1; p=reject; adkim=s; aspf=s` | a forged mail is rejected |
+| `@` MX | `.` (null MX, RFC 7505) | the zone receives no mail yet |
+| `@` CAA | `0 issue "letsencrypt.org"` | Let's Encrypt only (the issuer of App Platform) |
 
-Order, one product at a time (Verikora → Folioviv → Sovkora):
+Porkbun's parking records (apex ALIAS, wildcard CNAME) are not in this stack any more: they are not managed here, and the apply
+neither changes nor deletes them. The CTO removes them in Porkbun when a product's prod step takes the name.
 
-1. Nothing to delete by hand: Porkbun's parking records (ALIAS `@`, CNAME `*`, a default SPF) are imported (`imports.tf`), the plan updates them in place.
-2. `tofu apply` in this stack (state local, as above). Check `dig +short www.verikora.com CNAME`.
-3. In the product repository, add the new hosts to `deploy/digitalocean/app.yaml` (`domains:`; keep the old ones) and apply the spec.
-   App Platform asks for `_acme-challenge` TXT records for a wildcard (`*.folioviv.shop`): add them here as `kind = "acme"`, apply again.
-4. In the product, the canonical host becomes the new one (`APP_SITE_URL`, sitemap, hreflang, OG) and the app answers **301** from every
-   old host to the same path on the new one, one hop (the product slices #2038–#2040 carry it and its test).
-5. Check: `curl -sI https://dev.yomizaka.com/fr/x?y=1` → `301` with `location: https://dev.verikora.com/fr/x?y=1`;
-   `node scripts/check-seo-family.mjs --base https://www.verikora.com` green.
+When a product goes to prod (ADR-022 slices, one product at a time: Verikora, Folioviv, Sovkora), its records are added to its zone
+file, pointing at the **prod** app, in the pull request of that step, with the guard changed on purpose.
 
-**Mail.** Each product zone gets DMARC `p=none` now. SPF and DKIM are added when the product's sender (the mail provider of
-`MAIL_PROVIDER`) gives its keys for the new domain — a `kind = "mail"` record each, with a mail test — and no email uses the new
-domain before. **Search Console / Bing.** Verify each new domain by a DNS TXT record (never a file), then run **change of address**
-from the old property to the new one: a founder step if the console account is his (the card goes to Blocked for that step only).
-**Rollback.** Remove the zone from `main.tf` and apply: the old hosts never stopped serving.
+**Search Console / Bing.** Verify each new domain by a DNS TXT record (never a file) at the prod step. **Rollback.** Remove the zone
+from `main.tf` and apply: the old hosts never stopped serving.
 
 ## Records and their purpose
 
@@ -263,56 +255,56 @@ Generated from the zone files.
 | `*` | CNAME | app | *.akinaza.shop serves the shops of the akinaza-dev app (App Platform) |
 | `www` | CNAME | app | www.akinaza.shop leads to the app (308 to www.akinaza.com, App Platform) |
 
-### verikora.com (5)
+### verikora.com (4)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | verikora.com serves the yomizaka-dev app (App Platform) |
-| `www` | CNAME | app | www.verikora.com serves the yomizaka-dev app (App Platform) |
-| `dev` | CNAME | app | dev.verikora.com serves the yomizaka-dev app (App Platform) |
-| `admin` | CNAME | app | admin.verikora.com serves the yomizaka-dev app (App Platform) |
-| `_dmarc` | TXT | mail | DMARC policy of verikora.com (reports only, p=none until its sender's DKIM is live) |
+| `@` | TXT | mail | verikora.com sends no mail yet: every sender is refused (SPF -all) |
+| `_dmarc` | TXT | mail | DMARC policy of verikora.com: no mail is sent from it, a forged one is rejected |
+| `@` | MX | mail | verikora.com receives no mail yet (null MX, RFC 7505) |
+| `@` | CAA | verification | verikora.com certificates: Let's Encrypt only (the issuer of App Platform) |
 
-### folioviv.com (5)
-
-| Name | Type | Kind | Purpose |
-| :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | folioviv.com serves the akinaza-dev app (App Platform) |
-| `www` | CNAME | app | www.folioviv.com serves the akinaza-dev app (App Platform) |
-| `dev` | CNAME | app | dev.folioviv.com serves the akinaza-dev app (App Platform) |
-| `admin` | CNAME | app | admin.folioviv.com serves the akinaza-dev app (App Platform) |
-| `_dmarc` | TXT | mail | DMARC policy of folioviv.com (reports only, p=none until its sender's DKIM is live) |
-
-### folioviv.app (3)
+### folioviv.com (4)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | folioviv.app serves the akinaza-dev app (App Platform) |
-| `www` | CNAME | app | www.folioviv.app serves the akinaza-dev app (App Platform) |
-| `_dmarc` | TXT | mail | DMARC policy of folioviv.app (reports only, p=none until its sender's DKIM is live) |
+| `@` | TXT | mail | folioviv.com sends no mail yet: every sender is refused (SPF -all) |
+| `_dmarc` | TXT | mail | DMARC policy of folioviv.com: no mail is sent from it, a forged one is rejected |
+| `@` | MX | mail | folioviv.com receives no mail yet (null MX, RFC 7505) |
+| `@` | CAA | verification | folioviv.com certificates: Let's Encrypt only (the issuer of App Platform) |
+
+### folioviv.app (4)
+
+| Name | Type | Kind | Purpose |
+| :--- | :--- | :--- | :--- |
+| `@` | TXT | mail | folioviv.app sends no mail yet: every sender is refused (SPF -all) |
+| `_dmarc` | TXT | mail | DMARC policy of folioviv.app: no mail is sent from it, a forged one is rejected |
+| `@` | MX | mail | folioviv.app receives no mail yet (null MX, RFC 7505) |
+| `@` | CAA | verification | folioviv.app certificates: Let's Encrypt only (the issuer of App Platform) |
 
 ### folioviv.shop (4)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | folioviv.shop serves the akinaza-dev app (App Platform) |
-| `*` | CNAME | app | *.folioviv.shop serves the akinaza-dev app (App Platform) |
-| `www` | CNAME | app | www.folioviv.shop serves the akinaza-dev app (App Platform) |
-| `_dmarc` | TXT | mail | DMARC policy of folioviv.shop (reports only, p=none until its sender's DKIM is live) |
+| `@` | TXT | mail | folioviv.shop sends no mail yet: every sender is refused (SPF -all) |
+| `_dmarc` | TXT | mail | DMARC policy of folioviv.shop: no mail is sent from it, a forged one is rejected |
+| `@` | MX | mail | folioviv.shop receives no mail yet (null MX, RFC 7505) |
+| `@` | CAA | verification | folioviv.shop certificates: Let's Encrypt only (the issuer of App Platform) |
 
-### sovkora.com (5)
+### sovkora.com (4)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
-| `@` | ALIAS | app | sovkora.com serves the orazaka-dev app (App Platform) |
-| `www` | CNAME | app | www.sovkora.com serves the orazaka-dev app (App Platform) |
-| `dev` | CNAME | app | dev.sovkora.com serves the orazaka-dev app (App Platform) |
-| `admin` | CNAME | app | admin.sovkora.com serves the orazaka-dev app (App Platform) |
-| `_dmarc` | TXT | mail | DMARC policy of sovkora.com (reports only, p=none until its sender's DKIM is live) |
+| `@` | TXT | mail | sovkora.com sends no mail yet: every sender is refused (SPF -all) |
+| `_dmarc` | TXT | mail | DMARC policy of sovkora.com: no mail is sent from it, a forged one is rejected |
+| `@` | MX | mail | sovkora.com receives no mail yet (null MX, RFC 7505) |
+| `@` | CAA | verification | sovkora.com certificates: Let's Encrypt only (the issuer of App Platform) |
 
-### kridoc.com (2)
+### kridoc.com (4)
 
 | Name | Type | Kind | Purpose |
 | :--- | :--- | :--- | :--- |
 | `@` | TXT | mail | kridoc.com sends no mail yet: every sender is refused (SPF -all) |
 | `_dmarc` | TXT | mail | DMARC policy of kridoc.com: no mail is sent from it, a forged one is rejected |
+| `@` | MX | mail | kridoc.com receives no mail yet (null MX, RFC 7505) |
+| `@` | CAA | verification | kridoc.com certificates: Let's Encrypt only (the issuer of App Platform) |
