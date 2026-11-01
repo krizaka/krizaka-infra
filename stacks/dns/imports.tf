@@ -329,3 +329,150 @@ import {
   to = module.dns_porkbun["akinaza.com"].porkbun_dns_record.this["apex-ns-4"]
   id = "akinaza.com:594550441"
 }
+
+# Commercial domains (krizaka-internal#2037): the records Porkbun already holds at these names, brought under management so
+# the plan UPDATES them instead of failing a create with 400. Parking ALIAS/CNAME (pixie/uixie.porkbun.com) become ours;
+# akinaza.shop's four and the TXT/SPF are live already (the shops' records, kridoc's Porkbun SPF becomes « -all »).
+
+import {
+  to = module.dns_porkbun["akinaza.shop"].porkbun_dns_record.this["apex-alias"]
+  id = "akinaza.shop:599444644"
+}
+
+import {
+  to = module.dns_porkbun["akinaza.shop"].porkbun_dns_record.this["wildcard-cname"]
+  id = "akinaza.shop:599444645"
+}
+
+import {
+  to = module.dns_porkbun["akinaza.shop"].porkbun_dns_record.this["www-cname"]
+  id = "akinaza.shop:599444489"
+}
+
+import {
+  to = module.dns_porkbun["akinaza.shop"].porkbun_dns_record.this["apex-txt-gsc"]
+  id = "akinaza.shop:599585365"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.app"].porkbun_dns_record.this["apex-alias"]
+  id = "folioviv.app:599775685"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.com"].porkbun_dns_record.this["apex-alias"]
+  id = "folioviv.com:599775711"
+}
+
+import {
+  to = module.dns_porkbun["sovkora.com"].porkbun_dns_record.this["apex-alias"]
+  id = "sovkora.com:599775615"
+}
+
+import {
+  to = module.dns_porkbun["verikora.com"].porkbun_dns_record.this["apex-alias"]
+  id = "verikora.com:599775661"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.shop"].porkbun_dns_record.this["apex-alias"]
+  id = "folioviv.shop:599775719"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.shop"].porkbun_dns_record.this["wildcard-cname"]
+  id = "folioviv.shop:599775720"
+}
+
+import {
+  to = module.dns_porkbun["kridoc.com"].porkbun_dns_record.this["apex-spf-txt"]
+  id = "kridoc.com:599775733"
+}
+
+# The records the first apply of the commercial domains already created live (their ids), imported too: the plan is then right
+# whatever the state in hand (an empty one in CI, the CTO's after a partial apply); an address already in the state is skipped.
+
+import {
+  to = module.dns_porkbun["folioviv.app"].porkbun_dns_record.this["www-cname"]
+  id = "folioviv.app:599877108"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.app"].porkbun_dns_record.this["dmarc-txt"]
+  id = "folioviv.app:599877110"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.com"].porkbun_dns_record.this["admin-cname"]
+  id = "folioviv.com:599877092"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.com"].porkbun_dns_record.this["dev-cname"]
+  id = "folioviv.com:599877096"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.com"].porkbun_dns_record.this["www-cname"]
+  id = "folioviv.com:599877127"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.com"].porkbun_dns_record.this["dmarc-txt"]
+  id = "folioviv.com:599877093"
+}
+
+import {
+  to = module.dns_porkbun["sovkora.com"].porkbun_dns_record.this["admin-cname"]
+  id = "sovkora.com:599877097"
+}
+
+import {
+  to = module.dns_porkbun["sovkora.com"].porkbun_dns_record.this["dev-cname"]
+  id = "sovkora.com:599877111"
+}
+
+import {
+  to = module.dns_porkbun["sovkora.com"].porkbun_dns_record.this["www-cname"]
+  id = "sovkora.com:599877089"
+}
+
+import {
+  to = module.dns_porkbun["sovkora.com"].porkbun_dns_record.this["dmarc-txt"]
+  id = "sovkora.com:599877090"
+}
+
+import {
+  to = module.dns_porkbun["verikora.com"].porkbun_dns_record.this["admin-cname"]
+  id = "verikora.com:599877109"
+}
+
+import {
+  to = module.dns_porkbun["verikora.com"].porkbun_dns_record.this["dev-cname"]
+  id = "verikora.com:599877088"
+}
+
+import {
+  to = module.dns_porkbun["verikora.com"].porkbun_dns_record.this["www-cname"]
+  id = "verikora.com:599877087"
+}
+
+import {
+  to = module.dns_porkbun["verikora.com"].porkbun_dns_record.this["dmarc-txt"]
+  id = "verikora.com:599877091"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.shop"].porkbun_dns_record.this["www-cname"]
+  id = "folioviv.shop:599877126"
+}
+
+import {
+  to = module.dns_porkbun["folioviv.shop"].porkbun_dns_record.this["dmarc-txt"]
+  id = "folioviv.shop:599877112"
+}
+
+import {
+  to = module.dns_porkbun["kridoc.com"].porkbun_dns_record.this["dmarc-txt"]
+  id = "kridoc.com:599877105"
+}

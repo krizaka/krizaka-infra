@@ -1,6 +1,6 @@
 # verikora.com: Verikora (code name yomizaka): the product's site and dev site (krizaka-internal#2037, commercial names #2033).
 # NOT APPLIED by this pull request: the CTO applies it (README « Commercial domains »), BEFORE the app spec lists the domain.
-# The records are created, not imported: delete Porkbun's parking records (ALIAS @ and CNAME * to pixie/uixie.porkbun.com) first.
+# Porkbun's parking records (apex ALIAS, wildcard CNAME) are imported in imports.tf: the plan updates them, nothing is deleted by hand.
 locals {
   verikora_com = {
     "apex-alias"  = { name = "@", type = "ALIAS", value = "yomizaka-dev-q2huf.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "verikora.com serves the yomizaka-dev app (App Platform)" }
