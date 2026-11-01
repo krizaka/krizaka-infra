@@ -7,7 +7,7 @@ locals {
     "yomizaka.com" = local.yomizaka_com
     "akinaza.com"  = local.akinaza_com
     "akinaza.shop" = local.akinaza_shop
-    # The commercial names (krizaka-internal#2037): created, not imported — README « Commercial domains ».
+    # The commercial names (krizaka-internal#2037): new records created, parking records imported (imports.tf) — README « Commercial domains ».
     "verikora.com"  = local.verikora_com
     "folioviv.com"  = local.folioviv_com
     "folioviv.app"  = local.folioviv_app

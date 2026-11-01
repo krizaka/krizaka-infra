@@ -1,6 +1,6 @@
 # sovkora.com: Sovkora (code name orazaka): the engine's site and dev site (krizaka-internal#2037, commercial names #2033).
 # NOT APPLIED by this pull request: the CTO applies it (README « Commercial domains »), BEFORE the app spec lists the domain.
-# The records are created, not imported: delete Porkbun's parking records (ALIAS @ and CNAME * to pixie/uixie.porkbun.com) first.
+# Porkbun's parking records (apex ALIAS, wildcard CNAME) are imported in imports.tf: the plan updates them, nothing is deleted by hand.
 locals {
   sovkora_com = {
     "apex-alias"  = { name = "@", type = "ALIAS", value = "orazaka-dev-averr.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "sovkora.com serves the orazaka-dev app (App Platform)" }

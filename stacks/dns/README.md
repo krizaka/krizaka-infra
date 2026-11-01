@@ -86,7 +86,7 @@ The lab changes address: `motion.krizaka.com` becomes `lab.krizaka.com`. Nothing
 `zone_akinaza_shop.tf` adds three records (`@` ALIAS, `*` and `www` CNAME) to the akinaza-dev App Platform app. They are created, not imported:
 the plan must say `3 to add, 0 to change, 0 to destroy` and nothing else. Order:
 
-1. At Porkbun, delete the parking records of `akinaza.shop` (ALIAS `@` and CNAME `*` towards `pixie`/`uixie.porkbun.com`), else the creation is refused.
+1. Nothing to delete by hand: the parking records are imported (`imports.tf`), the plan updates them.
 2. `tofu apply` in this stack (state local, as above). Check `dig +short x.akinaza.shop CNAME`.
 3. Only then apply the app spec of `krizaka/akinaza` (`deploy/digitalocean/app.yaml`: `akinaza.shop` with its wildcard, `www.akinaza.shop`, `APP_SHOP_DOMAIN`):
    App Platform asks for TXT records to issue the wildcard certificate (the `_acme-challenge` ones, as for `akinaza.com`): add them here as `kind = "acme"`, apply again.
@@ -111,7 +111,7 @@ Six zones are added, 24 records, all created (not imported): the plan must say `
 
 Order, one product at a time (Verikora → Folioviv → Sovkora):
 
-1. At Porkbun, delete the parking records of the zone (ALIAS `@` and CNAME `*` towards `pixie`/`uixie.porkbun.com`), else the creation is refused.
+1. Nothing to delete by hand: Porkbun's parking records (ALIAS `@`, CNAME `*`, a default SPF) are imported (`imports.tf`), the plan updates them in place.
 2. `tofu apply` in this stack (state local, as above). Check `dig +short www.verikora.com CNAME`.
 3. In the product repository, add the new hosts to `deploy/digitalocean/app.yaml` (`domains:`; keep the old ones) and apply the spec.
    App Platform asks for `_acme-challenge` TXT records for a wildcard (`*.folioviv.shop`): add them here as `kind = "acme"`, apply again.
