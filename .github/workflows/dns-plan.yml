@@ -49,8 +49,8 @@ jobs:
         id: plan
         run: |
           set +e
-          # On a pull request the records to add are its purpose; changes and destroys still fail (the daily run stays strict).
-          if [ "${{ github.event_name }}" = pull_request ]; then export DNS_PLAN_ALLOW_ADD=1; fi
+          # On a pull request the records to add or change are its purpose (nothing is applied); destroys still fail, and the daily run stays strict.
+          if [ "${{ github.event_name }}" = pull_request ]; then export DNS_PLAN_ALLOW_ADD=1 DNS_PLAN_ALLOW_CHANGE=1; fi
           ./scripts/dns-plan.sh 2>&1 | tee "$RUNNER_TEMP/plan.txt"
           code=${PIPESTATUS[0]}
           echo "code=$code" >> "$GITHUB_OUTPUT"

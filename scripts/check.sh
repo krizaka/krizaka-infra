@@ -6,6 +6,7 @@ cd "$(dirname "$0")/.."
 
 dirs=$(find modules providers stacks -name '*.tf' -not -path '*/.terraform/*' -not -path '*/tests/*' \
   -exec dirname {} \; 2>/dev/null | sort -u || true)
+"$(dirname "$0")/check-commercial-dns.sh"
 if [ -z "$dirs" ]; then echo "no OpenTofu code yet"; exit 0; fi
 
 for d in $dirs; do

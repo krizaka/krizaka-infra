@@ -6,7 +6,9 @@
 # Prints one summary line, e.g. « Plan: 134 to import, 0 to add, 0 to change, 0 to destroy. », and exits 1 when the
 # live DNS differs from the code (a record to add, change or destroy), 0 when it does not.
 # DNS_PLAN_ALLOW_ADD=1 (set on pull requests only): records to ADD are the pull request's own purpose, so they do not fail;
-# a change or a destroy of a live record still does. The daily drift check never sets it: once applied, adds must be 0.
+# a change or a destroy of a live record still does, unless DNS_PLAN_ALLOW_CHANGE=1 (also pull requests only): the pull request
+# rewrites live records on purpose (e.g. DMARC p=none to p=reject, ADR-022). A destroy always fails. The daily drift check
+# never sets either: once applied, adds and changes must be 0.
 set -euo pipefail
 cd "$(dirname "$0")/../stacks/dns"
 
@@ -28,9 +30,10 @@ read -r imp add chg del < <(jq -r '
       ($c | map(select(.a | index("delete"))) | length) ] | @tsv' "$work/plan.json")
 
 echo "Plan: $imp to import, $add to add, $chg to change, $del to destroy."
-if { [ "$add" != 0 ] && [ "${DNS_PLAN_ALLOW_ADD:-0}" != 1 ]; } || [ "$chg" != 0 ] || [ "$del" != 0 ]; then
+if { [ "$add" != 0 ] && [ "${DNS_PLAN_ALLOW_ADD:-0}" != 1 ]; } || { [ "$chg" != 0 ] && [ "${DNS_PLAN_ALLOW_CHANGE:-0}" != 1 ]; } || [ "$del" != 0 ]; then
   echo "The live DNS differs from the code. Changed records:"
   jq -r '.resource_changes[] | select(.change.actions != ["no-op"] and .change.actions != ["read"]) | select(.change.actions | index("no-op") | not) | "  \(.address): \(.change.actions | join(","))"' "$work/plan.json" | head -n 40
   exit 1
 fi
 [ "$add" = 0 ] || echo "$add record(s) to add: intended by this pull request, to be applied by the CTO."
+[ "$chg" = 0 ] || echo "$chg record(s) to change: intended by this pull request, to be applied by the CTO."
