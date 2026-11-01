@@ -1,0 +1,13 @@
+{
+  "project": "krizaka_krizaka-infra",
+  "counts": {
+    "bugs": 0,
+    "vulnerabilities": 0,
+    "hotspots": 0,
+    "smells_blocker": 0,
+    "smells_critical": 0,
+    "smells_major": 10,
+    "smells_minor": 0,
+    "smells_info": 0
+  }
+}
