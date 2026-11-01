@@ -1,12 +1,10 @@
 # verikora.com: Verikora (code name yomizaka): the product's site and dev site (krizaka-internal#2037, commercial names #2033).
-# NOT APPLIED by this pull request: the CTO applies it (README « Commercial domains »), BEFORE the app spec lists the domain.
-# Porkbun's parking records (apex ALIAS, wildcard CNAME) are imported in imports.tf: the plan updates them, nothing is deleted by hand.
+# NOT APPLIED: the CTO applies it (README « Commercial domains »). No record here targets an app: ADR-022, a commercial name never serves a dev app; the app records arrive with the product's prod step, pointing at the prod app (krizaka-internal#2128).
 locals {
   verikora_com = {
-    "apex-alias"  = { name = "@", type = "ALIAS", value = "yomizaka-dev-q2huf.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "verikora.com serves the yomizaka-dev app (App Platform)" }
-    "www-cname"   = { name = "www", type = "CNAME", value = "yomizaka-dev-q2huf.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "www.verikora.com serves the yomizaka-dev app (App Platform)" }
-    "dev-cname"   = { name = "dev", type = "CNAME", value = "yomizaka-dev-q2huf.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "dev.verikora.com serves the yomizaka-dev app (App Platform)" }
-    "admin-cname" = { name = "admin", type = "CNAME", value = "yomizaka-dev-q2huf.ondigitalocean.app", ttl = 600, prio = 0, kind = "app", purpose = "admin.verikora.com serves the yomizaka-dev app (App Platform)" }
-    "dmarc-txt"   = { name = "_dmarc", type = "TXT", value = "v=DMARC1; p=none; adkim=r; aspf=r", ttl = 600, prio = 0, kind = "mail", purpose = "DMARC policy of verikora.com (reports only, p=none until its sender's DKIM is live)" }
+    "apex-spf-txt" = { name = "@", type = "TXT", value = "v=spf1 -all", ttl = 600, prio = 0, kind = "mail", purpose = "verikora.com sends no mail yet: every sender is refused (SPF -all)" }
+    "dmarc-txt"    = { name = "_dmarc", type = "TXT", value = "v=DMARC1; p=reject; adkim=s; aspf=s", ttl = 600, prio = 0, kind = "mail", purpose = "DMARC policy of verikora.com: no mail is sent from it, a forged one is rejected" }
+    "apex-null-mx" = { name = "@", type = "MX", value = ".", ttl = 600, prio = 0, kind = "mail", purpose = "verikora.com receives no mail yet (null MX, RFC 7505)" }
+    "apex-caa"     = { name = "@", type = "CAA", value = "0 issue \"letsencrypt.org\"", ttl = 600, prio = 0, kind = "verification", purpose = "verikora.com certificates: Let's Encrypt only (the issuer of App Platform)" }
   }
 }
