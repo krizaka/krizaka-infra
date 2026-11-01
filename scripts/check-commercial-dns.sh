@@ -7,7 +7,10 @@ cd "$(dirname "$0")/../stacks/dns"
 bad=0
 for f in zone_verikora_com.tf zone_folioviv_com.tf zone_folioviv_app.tf zone_folioviv_shop.tf zone_sovkora_com.tf zone_kridoc_com.tf; do
   while IFS= read -r line; do
-    case "$line" in \#*) continue ;; esac
+    case "$line" in
+      \#*) continue ;;
+      *) ;;
+    esac
     if printf '%s' "$line" | grep -Eiq 'ondigitalocean\.app|yomizaka|akinaza|orazaka|kachizaka|kind *= *"app"|type *= *"(A|AAAA|CNAME|ALIAS)"'; then
       echo "commercial DNS guard: $f points at an app: $line" >&2
       bad=1
