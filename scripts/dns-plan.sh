@@ -30,10 +30,10 @@ read -r imp add chg del < <(jq -r '
       ($c | map(select(.a | index("delete"))) | length) ] | @tsv' "$work/plan.json")
 
 echo "Plan: $imp to import, $add to add, $chg to change, $del to destroy."
-if { [ "$add" != 0 ] && [ "${DNS_PLAN_ALLOW_ADD:-0}" != 1 ]; } || { [ "$chg" != 0 ] && [ "${DNS_PLAN_ALLOW_CHANGE:-0}" != 1 ]; } || [ "$del" != 0 ]; then
+if { [[ "$add" != 0 ]] && [[ "${DNS_PLAN_ALLOW_ADD:-0}" != 1 ]]; } || { [[ "$chg" != 0 ]] && [[ "${DNS_PLAN_ALLOW_CHANGE:-0}" != 1 ]]; } || [[ "$del" != 0 ]]; then
   echo "The live DNS differs from the code. Changed records:"
   jq -r '.resource_changes[] | select(.change.actions != ["no-op"] and .change.actions != ["read"]) | select(.change.actions | index("no-op") | not) | "  \(.address): \(.change.actions | join(","))"' "$work/plan.json" | head -n 40
   exit 1
 fi
-[ "$add" = 0 ] || echo "$add record(s) to add: intended by this pull request, to be applied by the CTO."
-[ "$chg" = 0 ] || echo "$chg record(s) to change: intended by this pull request, to be applied by the CTO."
+[[ "$add" = 0 ]] || echo "$add record(s) to add: intended by this pull request, to be applied by the CTO."
+[[ "$chg" = 0 ]] || echo "$chg record(s) to change: intended by this pull request, to be applied by the CTO."

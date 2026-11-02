@@ -17,5 +17,5 @@ for f in zone_verikora_com.tf zone_folioviv_com.tf zone_folioviv_app.tf zone_fol
     fi
   done < "$f"
 done
-[ "$bad" = 0 ] || { echo "ADR-022: a commercial name never serves a dev app; records arrive with the product's prod step." >&2; exit 1; }
+[[ "$bad" = 0 ]] || { echo "ADR-022: a commercial name never serves a dev app; records arrive with the product's prod step." >&2; exit 1; }
 echo "commercial DNS guard: ok"
